@@ -1,13 +1,21 @@
 ```javascript
+const csr = X509.csr('name.com');
+const response = await csr.generate('ECC')
+
+console.log(response)
+```
+
+```javascript
 const csr = X509.csr('name.com')
-csr.add_san('name.com')
-csr.add_san('*.name.com')
-csr.org('ORGNAME')
-csr.org_unit('Unit')
-csr.email('test@gm.com')
-csr.state('State')
-csr.country('CN')
-csr.location('City')
+  .san('name.com')
+  .san('*.name.com')
+  .san(['*.loc.name.com', '*.sev.name.com'])
+  .org('orgname')
+  .org_unit('Unit')
+  .email('test@gm.com')
+  .state('State')
+  .country('CN')
+  .location('City');
 const response = await csr.generate('ECC')
 
 console.log(response)
