@@ -315,16 +315,18 @@ function build_csr(algorithmType, body, signature){
     ).encode(csr);
     return csr;
 }
-
-async function generate_csr(commonName, subjectAltNames, algorithmType, algorithmParam, x509Names) {
-
-    if (!subjectAltNames || subjectAltNames.length === 0) subjectAltNames = [commonName]
+function check_params(algorithmType, algorithmParam){
 
     if (algorithmType !== 'ECC' && algorithmType !== 'RSA') throw new Error('only support: ECC/RSA')
     if (algorithmType === 'ECC' && algorithmParam !== 'P-256' && algorithmParam !== 'P-384' && algorithmParam !== 'P-521' && algorithmParam !== undefined)
         throw new Error('only support: P-256/P-384/P-521, default: P-384')
     if (algorithmType === 'RSA' && algorithmParam !== 2048 && algorithmParam !== 4096 && algorithmParam !== undefined)
         throw new Error('only support: 2048/4096, default: 2048')
+}
+async function generate_csr(commonName, subjectAltNames, algorithmType, algorithmParam, x509Names) {
+    check_params( algorithmType, algorithmParam)
+    if (!subjectAltNames || subjectAltNames.length === 0) subjectAltNames = [commonName]
+
 
     x509Names = x509Names || {}
 
@@ -343,5 +345,18 @@ async function generate_csr(commonName, subjectAltNames, algorithmType, algorith
         private_key: build_pem('PRIVATE KEY', keys.private_key),
         public_key: build_pem('PUBLIC KEY', keys.public_key),
         csr: build_pem('CERTIFICATE REQUEST', csr)
+    };
+}
+
+export async function generate_asymmetric_keypair(algorithmType, algorithmParam) {
+
+    check_params( algorithmType, algorithmParam)
+
+    const keypair = await gen_keypair(algorithmType, algorithmParam)
+
+    const keys = await export_keys(keypair.privateKey)
+    return {
+        private_key: build_pem('PRIVATE KEY', keys.private_key),
+        public_key: build_pem('PUBLIC KEY', keys.public_key)
     };
 }
