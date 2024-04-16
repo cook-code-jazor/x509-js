@@ -1,0 +1,11 @@
+# Created by .ignore support plugin (hsz.mobi)
+/.idea
+/node_modules
+/dist
+/public/web.config
+.DS_Store
+/.eslintignore
+/.eslintrc.js
+/package.json
+/README.md
+/webpack.config.js
