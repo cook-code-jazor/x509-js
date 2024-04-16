@@ -30,11 +30,11 @@
 
     return result
   }
-
-  export default  {
+  const Hex = {
     parse: hex2bin,
     stringify: bin2hex,
     transfer: function(chr) {
       return numeric2hex[chr >> 4] + numeric2hex[chr & 0xf]
     }
   }
+  export default Hex

@@ -226,14 +226,21 @@ export function csr(commonName) {
     function set_get(name, value) {
         if (value === undefined) return x509Names[name]
         x509Names[name] = value
+        return instance;
     }
 
-    return {
-        add_san(name) {
-            san.push(name)
+    const instance = {
+        add_san: (name) => instance.san(name),
+        san(name) {
+            if(!(name instanceof Array)) name = [name]
+            name.forEach(name => {
+                if(name && san.indexOf(name) === -1) san.push(name)
+            })
+            return instance;
         },
         clear_san() {
             san.length = 0;
+            return instance;
         },
         org: (value) => set_get('O', value),
         org_unit: (value) => set_get('OU', value),
@@ -244,6 +251,7 @@ export function csr(commonName) {
         email: (value) => set_get('E', value),
         generate: (algorithmType, algorithmParam) => generate_csr(commonName_, san, algorithmType, algorithmParam, x509Names)
     }
+    return instance
 }
 
 
