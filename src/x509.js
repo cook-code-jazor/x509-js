@@ -284,7 +284,7 @@ function build_root(commonName, x509Names, subjectAltNames, publicKey){
             build_x509name('E', x509Names)
         ),
         asn1_raw(publicKey),
-        asn1_constructed_context(0,
+        subjectAltNames.length === 0 ? null : asn1_constructed_context(0,
             asn1_constructed_sequence(
                 asn1_object_identifier('1.2.840.113549.1.9.14'),
                 asn1_constructed_set(
@@ -333,7 +333,7 @@ function check_params(algorithmType, algorithmParam){
 }
 async function generate_csr(commonName, subjectAltNames, algorithmType, algorithmParam, x509Names) {
     check_params( algorithmType, algorithmParam)
-    if (!subjectAltNames || subjectAltNames.length === 0) subjectAltNames = [commonName]
+    if (!subjectAltNames) subjectAltNames = []
 
 
     x509Names = x509Names || {}
