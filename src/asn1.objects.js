@@ -32,6 +32,11 @@ export function asn1_sequence(tag, ...children){
         children = children_;
     }
     return {
+        child(item){
+            if(item instanceof Array) push(children, item)
+            else children.push(item)
+            return this;
+        },
         encode(bytes){
             const sub_bytes = []
             children.forEach(t => t && t.encode(sub_bytes))

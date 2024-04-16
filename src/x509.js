@@ -28,7 +28,6 @@ import {
     asn1_visible_string,
     push
 } from './asn1.objects'
-import UTF8String from "./asn1.helper.UTF8String";
 
 const ExportFormat = {
     Raw : 0,
