@@ -26,6 +26,7 @@ CSRResult {
 }
 ```
 ```javascript
+//CSR with CommonName only
 const csr = X509.csr('name.com');
 const response = await csr.generate('ECC')
 
@@ -33,6 +34,7 @@ console.log(response)
 ```
 
 ```javascript
+//CSR with CommonName, SAN and other fields
 const csr = X509.csr('name.com')
   .san('name.com')
   .san('*.name.com')
@@ -48,7 +50,7 @@ const response = await csr.generate('ECC')
 console.log(response)
 ```
 ```javascript
-
+//generate keypair
 const response = await X509.generate_asymmetric_keypair('ECC')
 
 console.log(response)
