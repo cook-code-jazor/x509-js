@@ -13,16 +13,15 @@ export const push = function (target, source){
     }
     Array.prototype.push.apply(target, source);
 }
-export function asn1_object(tag, ...contents){
+export function asn1_object(tag, contents){
+    contents = contents || []
     return {
         encode(bytes){
-            let length = contents.reduce((p, c) => p + c.length, 0)
-            encode_tag_header(tag, length, bytes);
+            if(typeof contents === 'function') contents = contents()
+            if(typeof contents === 'string') contents = contents.split('').map(t => t.charCodeAt(0))
 
-            contents.forEach(t => {
-                if(typeof t === 'string') t = t.split('').map(t => t.charCodeAt(0))
-                push(bytes, t)
-            })
+            encode_tag_header(tag, contents.length, bytes);
+            push(bytes, contents)
         }
     }
 }

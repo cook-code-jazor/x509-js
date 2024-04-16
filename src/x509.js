@@ -173,7 +173,7 @@ export function export_public_key(publicKey, format) {
 
     })
 }
-export function export_key(privateKey) {
+export function export_keys(privateKey) {
     return crypto.subtle.exportKey('jwk', privateKey).then(info => {
         return {
             private_key: generate_pkcs8_key(info),
@@ -247,7 +247,7 @@ export function csr(commonName) {
 }
 
 
-function generate_san(names) {
+function build_san(names) {
     const bytes = [];
     asn1_constructed_sequence(function (children) {
         names.forEach(t => {
@@ -257,7 +257,7 @@ function generate_san(names) {
     return bytes
 }
 
-function generate_root(commonName, x509Names, subjectAltNames, publicKey){
+function build_root(commonName, x509Names, subjectAltNames, publicKey){
     const root = asn1_constructed_sequence(
         asn1_integer(0),
         asn1_constructed_sequence(
@@ -283,7 +283,7 @@ function generate_root(commonName, x509Names, subjectAltNames, publicKey){
                     asn1_constructed_sequence(
                         asn1_constructed_sequence(
                             asn1_object_identifier('2.5.29.17'),
-                            asn1_octet_string(generate_san(subjectAltNames))
+                            asn1_octet_string(build_san(subjectAltNames))
                         )
                     )
                 )
@@ -302,7 +302,7 @@ function gen_keypair(algorithmType, algorithmParam){
          generate_rsa_keypair(algorithmParam || 2048);
 }
 
-function gen_csr(algorithmType, body, signature){
+function build_csr(algorithmType, body, signature){
     const csr = [];
 
     asn1_constructed_sequence(
@@ -330,14 +330,14 @@ async function generate_csr(commonName, subjectAltNames, algorithmType, algorith
 
     const keypair = await gen_keypair(algorithmType, algorithmParam)
 
-    const keys = await export_key(keypair.privateKey)
+    const keys = await export_keys(keypair.privateKey)
 
-    const bytes = generate_root(commonName, x509Names, subjectAltNames, keys.public_key)
+    const bytes = build_root(commonName, x509Names, subjectAltNames, keys.public_key)
 
     const signature = await sign(keypair.privateKey, bytes, algorithmType)
 
 
-    const csr = gen_csr(algorithmType, bytes, signature);
+    const csr = build_csr(algorithmType, bytes, signature);
 
     return {
         private_key: build_pem('PRIVATE KEY', keys.private_key),
