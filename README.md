@@ -1,18 +1,18 @@
 ```
-X509.csr(string commonName) : CSRInfo
+X509.csr(commonName:string) : CSRInfo
 ```
 ```
 CSRInfo {
-  san(string san) : CSRInfo,
+  san(san:string) : CSRInfo,
   san([san1, san2, san3]) : CSRInfo,
-  org(string org) : CSRInfo,
-  org_unit(string unit) : CSRInfo,
-  country(string countryCode) : CSRInfo,
-  state(string stateName) : CSRInfo,
-  location(string locationName) : CSRInfo,
-  street(string streetName) : CSRInfo,
-  email(string emailAddress) : CSRInfo,
-  generate(string alg[, string|int alg_param]) : Promise<CSRResult>
+  org(org:string) : CSRInfo,
+  org_unit(unit:string) : CSRInfo,
+  country(countryCode:string) : CSRInfo,
+  state(stateName:string) : CSRInfo,
+  location(locationName:string) : CSRInfo,
+  street(streetName:string) : CSRInfo,
+  email(emailAddress:string) : CSRInfo,
+  generate(alg:string[, alg_param:string|int]) : Promise<CSRResult>
 }
 
 CSRInfo.generate('ECC', 'P-256' | 'P-384' | 'P-521')
@@ -20,9 +20,9 @@ CSRInfo.generate('RSA', 2048 | 4096)
 ```
 ```
 CSRResult {
-  csr,
-  private_key,
-  public_key
+  csr:string,
+  private_key:string,
+  public_key:string
 }
 ```
 ```javascript
